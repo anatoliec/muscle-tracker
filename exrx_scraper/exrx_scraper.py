@@ -35,6 +35,32 @@ def scrape_exrx_directory():
     return raw_data_sub
 
 
+def scrape_exrx_muscle(muscle_url):
+    """
+
+    :return: Returns a list of the CSS elements that contain workout names & URLs for a given muscle.
+    """
+    # TODO:
+    page = requests.get('https://exrx.net/Lists/Directory')
+    contents = page.content
+
+    exrx = BeautifulSoup(contents, 'html.parser')
+    # Muscles start at index 0, last one is at 58.
+    raw_data = exrx.find("article").find_all("li")[:59]  # Retrieve all bullets in the "article" component.
+    raw_data_sub = []
+    idxs = [0, 3, 9, 13, 20, 31, 38, 44, 49, 53]  # I found each index by hand & hard-coded this.
+    for idx in idxs:
+        raw_data_sub.append(str(raw_data[idx]))
+    return raw_data_sub
+
+
+def scrape_exrx_workouts(MuscleGroup_obj):
+    # Returns the MuscleGroup_obj with the workouts appended to the appropriate muscle
+    # TODO: implement this
+    # TODO: add workout attrs to the Muscle class.
+    return 0
+
+
 def create_MuscleGroups(x):
     """
 
@@ -81,7 +107,7 @@ def scrape_muscleData():
             carry = muscle_data[i].muscles[j].name
     for [i, j] in duplicates:
         muscle_data[i].muscles.pop(j)
-    print(f'Successfully loaded muscle data.')
+    print(f'Successfully scraped muscle data.')
     return muscle_data
 
 
@@ -89,7 +115,7 @@ def save_muscleData(filename, data):
     # Save object to file
     with open(filename, 'wb') as outp:
         pickle.dump(data, outp, pickle.HIGHEST_PROTOCOL)
-        print(f'Saved muscle data: {outp}')
+        print(f'Muscle data: {outp}')
     return None
 
 
@@ -98,3 +124,10 @@ def load_muscleData(filename):
         infile = pickle.load(inp)
         print(f'Loaded file: {inp}')
     return infile
+
+
+if __name__ == "__main__":
+    AllMuscles = scrape_muscleData()
+    save_muscleData('muscle_data.pkl', AllMuscles)
+    del AllMuscles
+    exit(0)
