@@ -92,6 +92,7 @@ def scrape_muscleData():
     # Getting the muscle data
     exrx_css = scrape_exrx_directory()
     muscle_data = create_MuscleGroups(exrx_css)
+    # TODO: Make duplicate deletion work, then remove the below code chunk.
     # Delete duplicates
     duplicates = []
     for i in range(0, len(muscle_data)):
@@ -107,6 +108,12 @@ def scrape_muscleData():
             carry = muscle_data[i].muscles[j].name
     for [i, j] in duplicates:
         muscle_data[i].muscles.pop(j)
+
+    # Delete duplicates (v2.0)
+    unique_muscle_links = []
+    for i in range(0, len(muscle_data)):
+        unique_muscle_links = muscle_data.muscles
+
     print(f'Successfully scraped muscle data.')
     return muscle_data
 
